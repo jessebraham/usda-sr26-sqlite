@@ -39,9 +39,7 @@ def retrieve_database(url=__url__):
     return fname
 
 
-def unzip(fname):
-    dirname = '.tmp'
-
+def unzip(fname, dirname='.tmp'):
     if not os.path.exists(dirname):
         print 'Creating temporary directory "' + dirname + '"'
         os.makedirs(dirname);
@@ -52,6 +50,21 @@ def unzip(fname):
     with zipfile.ZipFile(fname, 'r') as z:
         z.extractall(dirname)
 
+
+def cleanup_data_files(dirname='.tmp'):
+    files = [f for f in os.listdir(dirname) \
+            if os.path.isfile(os.path.join(dirname, f))
+            and f.split('.')[-1] == 'txt']
+
+    for fname in files:
+        print 'Cleaning up ' + fname + '...'
+        with open(os.path.join(dirname, fname), 'r') as f:
+            data = f.read()
+        with open(os.path.join(dirname, fname), 'w') as f:
+            f.write(data.replace('~', ''))
+
+
 if __name__ == '__main__':
     fname = retrieve_database()
     unzip(fname)
+    cleanup_data_files()
