@@ -7,3 +7,7 @@ was disappointed to find the only available formats were ASCII, and
 Microsoft Access.  Neither of these worked for me, so I wrote this to
 download the ASCII version, unzip it, and parse the data into a sqlite3
 database.  
+
+### To Do:
+- Implement code to populate tables with data from appropriate files
+- Documentation
