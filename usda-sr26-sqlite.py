@@ -40,9 +40,18 @@ def retrieve_database(url=__url__):
 
 
 def unzip(fname):
+    dirname = '.tmp'
+
+    if not os.path.exists(dirname):
+        print 'Creating temporary directory "' + dirname + '"'
+        os.makedirs(dirname);
+    else:
+        print 'Directory "' + dirname + '" already exists, using directory'
+
+    print 'Extracting zipfile "' + fname + '" into directory "' + dirname  + '"'
     with zipfile.ZipFile(fname, 'r') as z:
-        z.extractall('./')
+        z.extractall(dirname)
 
 if __name__ == '__main__':
     fname = retrieve_database()
-    #unzip(fname)
+    unzip(fname)
