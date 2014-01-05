@@ -2,6 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import urllib2
+import zipfile
 
 
 __url__ = 'https://www.ars.usda.gov/SP2UserFiles/Place/12354500/Data/SR26/dnload/sr26.zip'
@@ -32,5 +33,14 @@ def retrieve_database(url=__url__):
 
     return fname
 
+
+def unzip(fname):
+    with open(fname, 'rb') as f:
+        z = zipfile.ZipFile(f)
+        for name in z.namelist():
+            outpath = './'
+            z.extract(name, outpath)
+
 if __name__ == '__main__':
     fname = retrieve_database()
+    unzip(fname)
