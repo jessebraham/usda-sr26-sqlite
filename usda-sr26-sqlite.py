@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
+import os
 import urllib2
 import zipfile
 
@@ -8,10 +9,14 @@ import zipfile
 __url__ = 'https://www.ars.usda.gov/SP2UserFiles/Place/12354500/Data/SR26/dnload/sr26.zip'
 
 def retrieve_database(url=__url__):
+    fname = url.split('/')[-1]
+    if os.path.isfile(fname):
+        print 'Zipfile already exists, terminating download'
+        return fname
+
     print 'Reading from: ' + url
     u = urllib2.urlopen(url)
 
-    fname = url.split('/')[-1]
     meta = u.info()
     fsize = int(meta.getheaders('Content-Length')[0])
     print 'Downloading: %s Bytes: %s' % (fname, fsize)
@@ -35,12 +40,9 @@ def retrieve_database(url=__url__):
 
 
 def unzip(fname):
-    with open(fname, 'rb') as f:
-        z = zipfile.ZipFile(f)
-        for name in z.namelist():
-            outpath = './'
-            z.extract(name, outpath)
+    with zipfile.ZipFile(fname, 'r') as z:
+        z.extractall('./')
 
 if __name__ == '__main__':
     fname = retrieve_database()
-    unzip(fname)
+    #unzip(fname)
