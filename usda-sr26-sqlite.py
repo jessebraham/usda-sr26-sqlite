@@ -2,6 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import os
+import sqlite3
 import urllib2
 import zipfile
 
@@ -64,7 +65,29 @@ def cleanup_data_files(dirname='.tmp'):
             f.write(data.replace('~', ''))
 
 
+def init_database(fname_db='sr26.db', fname_schema='sr26.schema'):
+    if not os.path.exists(fname_schema):
+        print 'Schema file not found, terminating'
+        return
+
+    with open(fname_schema, 'r') as f:
+        data = f.read()
+
+    conn = sqlite3.connect(fname_db)
+    cur = conn.cursor()
+
+    cur.executescript(data)
+
+    conn.commit()
+    conn.close()
+
+
 if __name__ == '__main__':
     fname = retrieve_database()
     unzip(fname)
     cleanup_data_files()
+
+    if not os.path.exists('sr26.db'):
+        init_database()
+    else:
+        print 'Database already exists'
