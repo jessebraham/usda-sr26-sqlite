@@ -1,3 +1,7 @@
+# Stupid .DS_Store...
+.DS_Store
+
+# Python files
 *.py[cod]
 
 # C extensions
