@@ -12,12 +12,48 @@ __url__ = 'https://www.ars.usda.gov/SP2UserFiles/Place/12354500/Data/' \
 
 
 def get_file_list(dirname):
+    """
+    Iterate through all files in the directory (provided as an argument),
+    and append the filename to a list if the extension is of type *.txt.
+    Return said list.
+
+    Parameters
+    ----------
+    dirname : str
+            A string representing the path of the directory you wish
+            to retrieve files from.
+
+    Returns
+    -------
+    list
+            A list of all files of type *.txt in the specified directory.
+    """
     return [f for f in os.listdir(dirname)
             if os.path.isfile(os.path.join(dirname, f))
             and f.split('.')[-1] == 'txt']
 
 
 def retrieve_database(url=__url__):
+    """
+    Initially determine the filename in which we're downloading uses the
+    provided URL, and check to see if that file already exists in the
+    current directory.  If the file exists, do not bother re-downloading it.
+    If the file does not exist, download it.  A pleansant little download
+    status bar has been provided for your entertainment.  Return the name
+    of the file, regardless of whether it was downloaded or it already
+    existed.
+
+    Parameters
+    ----------
+    url : str, optional
+            The url in which to download the database from.  Defaults to the
+            USDA SR26 download link stored in __url__.
+
+    Returns
+    -------
+    str
+            The name of the file which has been downloaded.
+    """
     fname = url.split('/')[-1]
     if os.path.isfile(fname):
         print 'Zipfile already exists, terminating download'
@@ -50,6 +86,19 @@ def retrieve_database(url=__url__):
 
 
 def unzip(fname, dirname='.tmp'):
+    """
+    Check if the directory already exists.  If it does not, create it.  If it
+    does, we'll use it!  Unzip the downloaded archive into the specified
+    directory.
+
+    Parameters
+    ----------
+    fname : str
+            The name of the zip archive in which to unzip.
+    dirname : str, optional
+            The temporary directory in which to store the unzipped files.
+            Defaults to '.tmp'.
+    """
     if not os.path.exists(dirname):
         print 'Creating temporary directory "' + dirname + '"'
         os.makedirs(dirname)
@@ -62,6 +111,17 @@ def unzip(fname, dirname='.tmp'):
 
 
 def cleanup_data_files(dirname='.tmp'):
+    """
+    For each file that was unzipped from the downloaded archive, open said
+    file and remove all tildas ( '~' ) surrounding data, and write the
+    changes back.
+
+    Parameters
+    ----------
+    dirname : str, optional
+            The temporary directory in which temp data is stored.
+            Defaults to '.tmp'.
+    """
     files = get_file_list(dirname)
 
     for fname in files:
@@ -73,9 +133,30 @@ def cleanup_data_files(dirname='.tmp'):
 
 
 def init_database(fname_db='sr26.db', fname_schema='sr26.schema'):
+    """
+    Begin by ensuring the schema file does indeed exist.  If it does not,
+    we can't initiate the database, so return False to indicate such.  If it
+    exists, open and read the schema file.  Create a connection to the
+    database, and execute the script.  Commit changes, and close the
+    connection.
+
+    Parameters
+    ----------
+    fname_db : str, optional
+            The name of the database file in which to create.
+            Defaults to 'sr26.db'.
+    fname_schema : str, optional
+            The name of the schema file in which to read from.
+            Defaults to 'sr26.schema'.
+
+    Returns
+    -------
+    bool
+            Return whether or not the database was successfully initiated.
+    """
     if not os.path.exists(fname_schema):
         print 'Schema file not found, terminating'
-        return
+        return False
 
     with open(fname_schema, 'r') as f:
         data = f.read()
@@ -85,8 +166,24 @@ def init_database(fname_db='sr26.db', fname_schema='sr26.schema'):
     conn.commit()
     conn.close()
 
+    return True
+
 
 def populate_db(fname_db='sr26.db', dirname='.tmp'):
+    """
+    Create a connection to the database.  For each file in the tempoarary
+    directory, read each row and insert the parsed data into the appropriate
+    table.  Commit all changes, and close the connection.
+
+    Parameters
+    ----------
+    fname_db : str, optional
+            The name of the database file in which to populate.
+            Defaults to 'sr26.db'.
+    dirname : str, optional
+            The name of the directory in which the temporary data is stored.
+            Defaults to '.tmp'.
+    """
     print 'Preparing to populate database...'
     conn = sqlite3.connect(fname_db)
     conn.text_factory = str
@@ -114,11 +211,23 @@ def populate_db(fname_db='sr26.db', dirname='.tmp'):
     conn.close()
 
 
-def cleanup(url=__url__, dirname='.tmp'):
-    print "Cleaning up..."
-    filename = url.split('/')[-1]
-    os.remove(filename)
+def cleanup(fname=__url__.split('/')[-1], dirname='.tmp'):
+    """
+    Remove the downloaded archive and the temporary directory along with its
+    contents.
 
+    Parameters
+    ----------
+    fname : str, optional
+            The name of the downloaded archive file.
+            Defaults to the name as determined by the __url__ variable.
+    dirname : str, optional
+            The name of the directory containing the temporary data.
+            Defaults to '.tmp'.
+
+    """
+    print "Cleaning up..."
+    os.remove(fname)
     shutil.rmtree(dirname)
 
 
@@ -127,11 +236,14 @@ if __name__ == '__main__':
     unzip(fname)
     cleanup_data_files()
 
+    ret = False
     if not os.path.exists('sr26.db'):
-        init_database()
+        ret = init_database()
     else:
         print 'Database already exists'
 
-    populate_db()
+    if ret is True:
+        populate_db()
+
     cleanup()
     print 'Done!'
