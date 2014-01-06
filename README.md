@@ -32,7 +32,7 @@ desired, or manually download the files.  Run as usual.
     $ python usda-sr26-sqlite.py
 
 ### License
-THE BEER-WARE LICENSE" (Revision 42):  
-[Jesse Braham](https://github.com/jessebraham) wrote this file. As long as you retain this notice you
+"THE BEER-WARE LICENSE" (Revision 42):  
+[Jesse Braham](https://github.com/jessebraham) wrote these files. As long as you retain this notice you
 can do whatever you want with this stuff. If we meet some day, and you think
 this stuff is worth it, you can buy me a beer in return - Jesse Braham
