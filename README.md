@@ -20,6 +20,17 @@ within a standard Python installation:
 - urllib2
 - zipfile
 
+### Usage
+Usage is very straight forward.  Either clone the repo to the location
+desired, or manually download the files.  Run as usual.
+
+    $ git clone https://github.com/jessebraham/usda-sr26-sqlite.git
+    $ # Or...
+    $ wget https://raw.github.com/jessebraham/usda-sr26-sqlite/master/usda-sr26-sqlite.py
+    $ wget https://raw.github.com/jessebraham/usda-sr26-sqlite/master/sr26.schema
+    $ # Run the utility...
+    $ python usda-sr26-sqlite.py
+
 ### License
 THE BEER-WARE LICENSE" (Revision 42):  
 [Jesse Braham](https://github.com/jessebraham) wrote this file. As long as you retain this notice you
