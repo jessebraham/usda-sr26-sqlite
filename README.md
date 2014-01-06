@@ -8,10 +8,13 @@ Microsoft Access.  Neither of these worked for me, so I wrote this to
 download the ASCII version, unzip it, and parse the data into a sqlite3
 database.  
 
-### To Do:
-- Test that everything works as intended
-- Improve code the best I can
-- Documentation
+This script uses the following modules, all of which should be included
+within a standard Python installation:
+- os
+- shutil
+- sqlite3
+- urllib2
+- zipfile
 
 ### License
 THE BEER-WARE LICENSE" (Revision 42):  
