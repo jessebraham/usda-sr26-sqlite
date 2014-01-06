@@ -7,11 +7,12 @@ import sqlite3
 import urllib2
 import zipfile
 
-__url__ = 'https://www.ars.usda.gov/SP2UserFiles/Place/12354500/Data/SR26/dnload/sr26.zip'
+__url__ = 'https://www.ars.usda.gov/SP2UserFiles/Place/12354500/Data/' \
+          'SR26/dnload/sr26.zip'
 
 
 def get_file_list(dirname):
-     return [f for f in os.listdir(dirname)
+    return [f for f in os.listdir(dirname)
             if os.path.isfile(os.path.join(dirname, f))
             and f.split('.')[-1] == 'txt']
 
@@ -40,8 +41,9 @@ def retrieve_database(url=__url__):
 
             downloaded += len(buffer)
             f.write(buffer)
-            status = r"%10d  [%3.2f%%]" % (downloaded, downloaded * 100. / fsize)
-            status = status + chr(8)*(len(status)+1)
+            status = r"%10d  [%3.2f%%]" % (downloaded,
+                                           downloaded * 100.0 / fsize)
+            status = status + chr(8) * (len(status) + 1)
             print status,
 
     return fname
@@ -50,11 +52,11 @@ def retrieve_database(url=__url__):
 def unzip(fname, dirname='.tmp'):
     if not os.path.exists(dirname):
         print 'Creating temporary directory "' + dirname + '"'
-        os.makedirs(dirname);
+        os.makedirs(dirname)
     else:
         print 'Directory "' + dirname + '" already exists, using directory'
 
-    print 'Extracting zipfile "' + fname + '" into directory "' + dirname  + '"'
+    print 'Extracting zipfile "' + fname + '" into directory "' + dirname + '"'
     with zipfile.ZipFile(fname, 'r') as z:
         z.extractall(dirname)
 
@@ -132,4 +134,4 @@ if __name__ == '__main__':
 
     populate_db()
     cleanup()
-    print "Done!"
+    print 'Done!'
