@@ -6,8 +6,14 @@ import sqlite3
 import urllib2
 import zipfile
 
-
 __url__ = 'https://www.ars.usda.gov/SP2UserFiles/Place/12354500/Data/SR26/dnload/sr26.zip'
+
+
+def get_file_list(dirname):
+     return [f for f in os.listdir(dirname)
+            if os.path.isfile(os.path.join(dirname, f))
+            and f.split('.')[-1] == 'txt']
+
 
 def retrieve_database(url=__url__):
     fname = url.split('/')[-1]
@@ -53,9 +59,7 @@ def unzip(fname, dirname='.tmp'):
 
 
 def cleanup_data_files(dirname='.tmp'):
-    files = [f for f in os.listdir(dirname) \
-            if os.path.isfile(os.path.join(dirname, f))
-            and f.split('.')[-1] == 'txt']
+    files = get_file_list(dirname)
 
     for fname in files:
         print 'Cleaning up ' + fname + '...'
@@ -74,15 +78,12 @@ def init_database(fname_db='sr26.db', fname_schema='sr26.schema'):
         data = f.read()
 
     conn = sqlite3.connect(fname_db)
-    cur = conn.cursor()
-
-    cur.executescript(data)
-
+    conn.executescript(data)
     conn.commit()
     conn.close()
 
 
-if __name__ == '__main__':
+f __name__ == '__main__':
     fname = retrieve_database()
     unzip(fname)
     cleanup_data_files()
