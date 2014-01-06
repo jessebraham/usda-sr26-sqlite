@@ -2,6 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import os
+import shutil
 import sqlite3
 import urllib2
 import zipfile
@@ -93,7 +94,7 @@ def populate_db(fname_db='sr26.db', dirname='.tmp'):
     for fname in files:
         table_name = fname.split('.')[-2]
 
-    with open(os.path.join(dirname, fname), 'r') as f:
+        with open(os.path.join(dirname, fname), 'r') as f:
             tmp = f.readline()
 
         query = 'INSERT INTO ' \
@@ -109,6 +110,13 @@ def populate_db(fname_db='sr26.db', dirname='.tmp'):
 
     conn.commit()
     conn.close()
+
+
+def cleanup(url=__url__, dirname='.tmp'):
+    filename = url.split('/')[-1]
+    os.remove(filename)
+
+    shutil.rmtree(dirname)
 
 
 if __name__ == '__main__':
