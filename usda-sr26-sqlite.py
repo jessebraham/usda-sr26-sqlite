@@ -83,7 +83,35 @@ def init_database(fname_db='sr26.db', fname_schema='sr26.schema'):
     conn.close()
 
 
-f __name__ == '__main__':
+def populate_db(fname_db='sr26.db', dirname='.tmp'):
+    print 'Preparing to populate database...'
+    conn = sqlite3.connect(fname_db)
+    conn.text_factory = str
+    cur = conn.cursor()
+
+    files = get_file_list(dirname)
+    for fname in files:
+        table_name = fname.split('.')[-2]
+
+    with open(os.path.join(dirname, fname), 'r') as f:
+            tmp = f.readline()
+
+        query = 'INSERT INTO ' \
+                + table_name \
+                + ' VALUES (' \
+                + str('?,' * len(tmp.split('^'))).rstrip(',') \
+                + ')'
+
+        with open(os.path.join(dirname, fname), 'r') as f:
+            print 'Populating table ' + table_name + '...'
+            for line in f:
+                cur.execute(query, line.split('^'))
+
+    conn.commit()
+    conn.close()
+
+
+if __name__ == '__main__':
     fname = retrieve_database()
     unzip(fname)
     cleanup_data_files()
@@ -92,3 +120,5 @@ f __name__ == '__main__':
         init_database()
     else:
         print 'Database already exists'
+
+    populate_db()
