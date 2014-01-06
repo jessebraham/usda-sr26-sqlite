@@ -113,6 +113,7 @@ def populate_db(fname_db='sr26.db', dirname='.tmp'):
 
 
 def cleanup(url=__url__, dirname='.tmp'):
+    print "Cleaning up..."
     filename = url.split('/')[-1]
     os.remove(filename)
 
@@ -130,3 +131,5 @@ if __name__ == '__main__':
         print 'Database already exists'
 
     populate_db()
+    cleanup()
+    print "Done!"
