@@ -9,6 +9,8 @@ download the ASCII version, unzip it, and parse the data into a sqlite3
 database.  
 
 ### To Do:
+- Test that everything works as intended
+- Improve code the best I can
 - Documentation
 
 ### License
