@@ -9,7 +9,6 @@ download the ASCII version, unzip it, and parse the data into a sqlite3
 database.  
 
 ### To Do:
-- Implement code to populate tables with data from appropriate files
 - Documentation
 
 ### License
