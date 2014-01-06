@@ -8,6 +8,10 @@ Microsoft Access.  Neither of these worked for me, so I wrote this to
 download the ASCII version, unzip it, and parse the data into a sqlite3
 database.  
 
+I don't do any cleaning up of data or any fancy business here.  I'm simply
+parsing the text files and inserting each row into the database.  It's not
+exactly the prettiest.  If you need it cleaned up, you're responsible.  
+
 This script uses the following modules, all of which should be included
 within a standard Python installation:
 - os
